@@ -1,25 +1,20 @@
 import socket
-from threading import Thread
 
-# handle connection of client
-def handleConnection(s, i):
-    # receive reply
-    reply = s.recv(2048).decode("utf-8")
-    print("Client: " + reply)
+host = "192.168.0.17"
+port = 9090
 
-    # send message
-    message = input("Server: ")
-    s.send(str(message).encode("utf-8"))
+player_name=input()
 
-# setting up socket
-s = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
-s.bind(("0.0.0.0",7777))
-s.listen(5)
-i = 0
+server = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
+server.bind((host,port))
 
-# keep threads running
+server.listen(5)
+
 while True:
-    i += 1
-    cs,addr = s.accept()
-    t = Thread(target = handleConnection, args = (cs, i))
-    t.start()
+    comunication_socket, address=server.accept()
+    message=comunication_socket.recv(2048).decode('utf-8')
+    print(message)
+    myMessage=input()
+    comunication_socket.send(player_name," ",myMessage).encode('utf-8')
+
+comunication_socket.close()
